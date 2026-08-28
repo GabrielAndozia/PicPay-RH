@@ -1,2 +1,8 @@
+* text=auto eol=lf
+
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
