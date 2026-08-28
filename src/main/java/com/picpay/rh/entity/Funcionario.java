@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-class Funcionario implements Serializable {
+public class Funcionario implements Serializable {
 
-    private int id;
+    private long id;
 
     private String nome;
 

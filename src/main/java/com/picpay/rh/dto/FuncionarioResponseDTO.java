@@ -12,7 +12,7 @@ public class FuncionarioResponseDTO implements Serializable{
     public FuncionarioResponseDTO() {}
 
 
-    private int id;
+    private long id;
 
     private String nome;
 
@@ -29,5 +29,5 @@ public class FuncionarioResponseDTO implements Serializable{
     private String cidade;
 
     private String status;
-    
+
 }
