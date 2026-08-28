@@ -1,0 +1,53 @@
+.lista-colaboradores-cabecalho {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #e4ebe6;
+}
+
+.lista-colaboradores-identificador {
+	margin: 0 0 6px;
+	color: #08783f;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.lista-colaboradores h2 {
+	margin: 0;
+	color: #1e2a23;
+	font-size: 24px;
+}
+
+.lista-colaboradores-total {
+	padding: 6px 10px;
+	color: #08783f;
+	background: #e4f7eb;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.lista-colaboradores-itens {
+	display: grid;
+	gap: 10px;
+	margin: 20px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.lista-colaboradores-vazia {
+	margin: 28px 0 0;
+	color: #526158;
+}
+
+@media (max-width: 520px) {
+	.lista-colaboradores-cabecalho {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 12px;
+	}
+}
