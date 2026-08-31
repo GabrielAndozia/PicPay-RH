@@ -1,9 +1,12 @@
 package com.picpay.rh.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.picpay.rh.dto.FuncionarioRequestDTO;
+import com.picpay.rh.dto.FuncionarioResponseDTO;
 import com.picpay.rh.repository.FuncionarioRepository;
-import com.picpay.rh.entity.Funcionario;
 
 @Service
 public class FuncionarioService {
@@ -14,96 +17,33 @@ public class FuncionarioService {
         this.repository = repository;
     }
 
-
-    public Funcionario atualizarFuncionario(int id, Funcionario funcionario) {
-        
-        Funcionario funcionarioExistente = repository.buscarPorId(id);
-        
-        if (funcionarioExistente == null){
-            return null;
-        }
-
-        funcionarioExistente.setId(funcionarioExistente.getId());
-        
-        funcionarioExistente.setNome(funcionarioExistente.getNome());
-
-        funcionarioExistente.setEmail(funcionarioExistente.getEmail());
-        
-        funcionarioExistente.setTelefone(funcionarioExistente.getTelefone());
-
-        funcionarioExistente.setCargo(funcionarioExistente.getCargo());
-
-        funcionarioExistente.setDepartamento(funcionarioExistente.getDepartamento());
-
-        funcionarioExistente.setSalario(funcionarioExistente.getSalario());
-
-        funcionarioExistente.setStatus(funcionarioExistente.getStatus());
-
-
-        return funcionarioExistente;
+    public FuncionarioResponseDTO salvar(FuncionarioRequestDTO funcionarioRequestDTO) {
+        return repository.save(funcionarioRequestDTO);
     }
 
-
-    public Funcionario atualizarFuncionarioParcial(long id, Funcionario funcionario){
-
-        Funcionario funcionarioExistente = repository.buscarPorId(id);
-
-        if (funcionarioExistente == null){
-            return null;
-        }
-
-        if (funcionarioExistente.getNome() != null) {
-            
-            funcionarioExistente.setNome(funcionario.getNome());
-
-        }
-        
-        if (funcionario.getEmail() != null) {
-            funcionarioExistente.setEmail(funcionario.getEmail());
-        }
-
-        if (funcionario.getTelefone() != null) {
-            funcionarioExistente.setTelefone(funcionario.getTelefone());
-        }
-
-        if (funcionario.getCargo() != null) {
-            funcionarioExistente.setCargo(funcionario.getCargo());
-        }
-
-        if (funcionario.getDepartamento() != null) {
-            funcionarioExistente.setDepartamento(funcionario.getDepartamento());
-        }
-
-        if (funcionario.getSalario() != 0) {
-            funcionarioExistente.setSalario(funcionario.getSalario());
-        }
-
-        if (funcionario.getCidade() != null) {
-            funcionarioExistente.setCidade(funcionario.getCidade());
-        }
-
-        if (funcionario.getStatus() != null) {
-            funcionarioExistente.setStatus(funcionario.getStatus());
-        }
-
-        return funcionarioExistente;
+    public List<FuncionarioResponseDTO> buscarTodos() {
+        return repository.findAll();
     }
 
-    public boolean deletarFuncionario(long id, Funcionario funcionario){
-
-        Funcionario funcionarioExistente = repository.buscarPorId(id);
-
-        if (funcionario == null){
-            return false;
-        }
-
-        repository.remove(id);
-
-        return true;
-
+    public FuncionarioResponseDTO buscarPorId(long id) {
+        return repository.findById(id);
     }
 
-    public List<Funcionario> pesquisar(String nome, String cargo, String status){
-        return repository.pesquisar(nome,cargo,status);
+    public FuncionarioResponseDTO atualizarFuncionario(
+            long id,
+            FuncionarioRequestDTO funcionarioRequestDTO) {
+
+        return repository.fullAlter(id, funcionarioRequestDTO);
+    }
+
+    public FuncionarioResponseDTO atualizarParcialmente(
+            long id,
+            FuncionarioRequestDTO funcionarioRequestDTO) {
+
+        return repository.partialAlter(id, funcionarioRequestDTO);
+    }
+
+    public boolean excluirFuncionario(long id) {
+        return repository.remove(id);
     }
 }
