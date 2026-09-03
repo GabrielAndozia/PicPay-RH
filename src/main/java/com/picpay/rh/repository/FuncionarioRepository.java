@@ -130,7 +130,7 @@ public class FuncionarioRepository {
                 if (funcionarioRequestDTO.getDepartamento() != null) {
                     f.setDepartamento(funcionarioRequestDTO.getDepartamento());
                 }
-                if (funcionarioRequestDTO.getSalario() != 0) {
+                if (funcionarioRequestDTO.getSalario() != null) {
                     f.setSalario(funcionarioRequestDTO.getSalario());
                 }
                 if (funcionarioRequestDTO.getCidade() != null) {

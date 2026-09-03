@@ -24,7 +24,7 @@ public class FuncionarioResponseDTO implements Serializable{
 
     private String departamento;
 
-    private double salario;
+    private Double salario;
 
     private String cidade;
 

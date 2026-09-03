@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Funcionario implements Serializable {
 
-    private long id;
+    private Long id;
 
     private String nome;
 
