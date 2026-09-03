@@ -16,7 +16,7 @@ function Cabecalho() {
     return (
         <header className="cabecalho">
             <div className="cabecalho-marca">
-                <span className="cabecalho-logo" aria-hidden="true">P</span>
+                <img className="cabecalho-logo" src="/icon-picpay.png" alt="Logo do PicPay" />
                 <div>
                     <p className="cabecalho-nome">PicPay</p>
                 </div>

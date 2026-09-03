@@ -10,6 +10,12 @@ function ItemColaborador({ colaborador, onEditar, onExcluir }: ItemColaboradorPr
 				<p className="item-colaborador-detalhes">
 					{colaborador.cargo} <span aria-hidden="true">|</span> {colaborador.email}
 				</p>
+				<p className="item-colaborador-detalhes">
+					{colaborador.departamento} <span aria-hidden="true">|</span> {colaborador.cidade}
+				</p>
+				<p className="item-colaborador-detalhes">
+					{colaborador.telefone} <span aria-hidden="true">|</span> {colaborador.status}
+				</p>
 			</div>
 
 			<div className="item-colaborador-acoes">

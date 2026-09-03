@@ -1,4 +1,3 @@
-import { useState } from "react"
 import ItemColaborador from "../ItemColaborador"
 import type { Colaborador } from "./script"
 import "./style.css"
@@ -6,15 +5,12 @@ import type { ListaColaboradoresProps } from "./ListaColaboradoresProps"
 
 function ListaColaboradores({
 	colaboradores = [],
+	carregando = false,
+	erro = null,
 	onEditar,
 	onExcluir,
 }: ListaColaboradoresProps) {
-	const [colaboradoresVisiveis, setColaboradoresVisiveis] = useState(colaboradores)
-
 	function excluirColaborador(colaborador: Colaborador) {
-		setColaboradoresVisiveis((listaAtual) =>
-			listaAtual.filter(({ id }) => id !== colaborador.id),
-		)
 		onExcluir?.(colaborador)
 	}
 
@@ -26,13 +22,17 @@ function ListaColaboradores({
 					<h2 id="titulo-lista-colaboradores">Registros cadastrados</h2>
 				</div>
 				<span className="lista-colaboradores-total">
-					{colaboradoresVisiveis.length} cadastrados
+					{colaboradores.length} cadastrados
 				</span>
 			</div>
 
-			{colaboradoresVisiveis.length > 0 ? (
+			{carregando ? (
+				<p className="lista-colaboradores-vazia">Carregando colaboradores...</p>
+			) : erro ? (
+				<p className="lista-colaboradores-vazia">{erro}</p>
+			) : colaboradores.length > 0 ? (
 				<ul className="lista-colaboradores-itens">
-					{colaboradoresVisiveis.map((colaborador) => (
+					{colaboradores.map((colaborador) => (
 						<ItemColaborador
 							key={colaborador.id}
 							colaborador={colaborador}

@@ -35,15 +35,10 @@
 }
 
 .cabecalho-logo {
-    display: grid;
-    place-items: center;
+    display: block;
     width: 37px;
     height: 37px;
-    border: 2px solid rgba(255, 255, 255, 0.86);
-    border-radius: 50%;
-    font-size: 23px;
-    font-weight: 700;
-    line-height: 1;
+    object-fit: contain;
 }
 
 .cabecalho-nome,

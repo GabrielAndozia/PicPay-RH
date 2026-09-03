@@ -1,11 +1,14 @@
-export interface DadosCadastroColaborador {
-	nome: string
-	cargo: string
-	email: string
-}
+import type { FuncionarioRequestDTO } from "../../models/funcionario"
+
+export type DadosCadastroColaborador = FuncionarioRequestDTO
 
 export const dadosCadastroIniciais: DadosCadastroColaborador = {
 	nome: "",
-	cargo: "",
 	email: "",
+	telefone: "",
+	cargo: "",
+	departamento: "",
+	salario: 0,
+	cidade: "",
+	status: "Ativo",
 }

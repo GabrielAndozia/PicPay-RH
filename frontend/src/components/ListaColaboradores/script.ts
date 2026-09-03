@@ -1,6 +1,3 @@
-export interface Colaborador {
-	id: number
-	nome: string
-	cargo: string
-	email: string
-}
+import type { FuncionarioResponseDTO } from "../../models/funcionario"
+
+export type Colaborador = FuncionarioResponseDTO
