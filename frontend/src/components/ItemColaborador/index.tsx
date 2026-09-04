@@ -6,6 +6,7 @@ function ItemColaborador({ colaborador, onEditar, onExcluir }: ItemColaboradorPr
 	return (
 		<li className="item-colaborador">
 			<div className="item-colaborador-dados">
+				<p className="item-colaborador-id">ID #{colaborador.id}</p>
 				<p className="item-colaborador-nome">{colaborador.nome}</p>
 				<p className="item-colaborador-detalhes">
 					{colaborador.cargo} <span aria-hidden="true">|</span> {colaborador.email}

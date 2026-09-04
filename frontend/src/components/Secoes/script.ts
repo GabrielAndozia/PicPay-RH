@@ -5,6 +5,11 @@ export const secoes = [
 		descricao: "Registre um novo colaborador no sistema.",
 	},
 	{
+		id: "edicao",
+		titulo: "Pesquisar e atualizar",
+		descricao: "Busque por ID e atualize os dados de um colaborador.",
+	},
+	{
 		id: "listagem",
 		titulo: "Colaboradores",
 		descricao: "Consulte os colaboradores cadastrados e gerencie cada registro.",

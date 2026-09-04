@@ -8,9 +8,19 @@
 	border-radius: 6px;
 }
 
+.item-colaborador-id,
 .item-colaborador-nome,
 .item-colaborador-detalhes {
 	margin: 0;
+}
+
+.item-colaborador-id {
+	margin-bottom: 4px;
+	color: #08783f;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
 }
 
 .item-colaborador-nome {

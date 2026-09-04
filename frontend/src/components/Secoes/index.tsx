@@ -7,9 +7,11 @@ import type { SecoesProps } from "./SecoesProps"
 import type { DadosCadastroColaborador } from "../FormularioCadastro/script"
 import type { Colaborador } from "../ListaColaboradores/script"
 import {
+	buscarFuncionarioPorId,
 	criarFuncionario,
 	excluirFuncionario,
 	listarFuncionarios,
+	atualizarFuncionario,
 } from "../../services/funcionarioApi"
 
 function Secoes({ conteudos = {} }: SecoesProps) {
@@ -17,8 +19,11 @@ function Secoes({ conteudos = {} }: SecoesProps) {
 	const [colaboradores, setColaboradores] = useState<Colaborador[]>([])
 	const [carregandoLista, setCarregandoLista] = useState(true)
 	const [enviandoCadastro, setEnviandoCadastro] = useState(false)
+	const [enviandoEdicao, setEnviandoEdicao] = useState(false)
 	const [erroLista, setErroLista] = useState<string | null>(null)
 	const [erroCadastro, setErroCadastro] = useState<string | null>(null)
+	const [erroEdicao, setErroEdicao] = useState<string | null>(null)
+	const [colaboradorEmEdicao, setColaboradorEmEdicao] = useState<Colaborador | null>(null)
 	const secao = obterSecao(secaoAtual)
 
 	useEffect(() => {
@@ -61,6 +66,58 @@ function Secoes({ conteudos = {} }: SecoesProps) {
 		}
 	}
 
+	async function atualizarColaborador(id: number, dados: DadosCadastroColaborador) {
+		setEnviandoEdicao(true)
+		setErroEdicao(null)
+
+		try {
+			const funcionarioAtualizado = await atualizarFuncionario(id, dados)
+			setColaboradores((listaAtual) =>
+				listaAtual.map((colaborador) =>
+					colaborador.id === funcionarioAtualizado.id ? funcionarioAtualizado : colaborador,
+				),
+			)
+			setColaboradorEmEdicao(null)
+		} catch (error) {
+			setErroEdicao(
+				error instanceof Error
+					? error.message
+					: "Nao foi possivel atualizar o colaborador.",
+			)
+		} finally {
+			setEnviandoEdicao(false)
+		}
+	}
+
+	async function buscarColaboradorPorId(id: number) {
+		setEnviandoEdicao(true)
+		setErroEdicao(null)
+
+		try {
+			const funcionario = await buscarFuncionarioPorId(id)
+			setColaboradorEmEdicao(funcionario)
+		} catch (error) {
+			setErroEdicao(
+				error instanceof Error
+					? error.message
+					: "Nao foi possivel buscar o colaborador por ID.",
+			)
+		} finally {
+			setEnviandoEdicao(false)
+		}
+	}
+
+	function iniciarEdicao(colaborador: Colaborador) {
+		setErroEdicao(null)
+		setColaboradorEmEdicao(colaborador)
+		setSecaoAtual("edicao")
+	}
+
+	function cancelarEdicao() {
+		setColaboradorEmEdicao(null)
+		setErroEdicao(null)
+	}
+
 	async function removerColaborador(colaborador: Colaborador) {
 		try {
 			await excluirFuncionario(colaborador.id)
@@ -77,12 +134,29 @@ function Secoes({ conteudos = {} }: SecoesProps) {
 	}
 
 	const conteudosPadrao = {
-		cadastro: <FormularioCadastro onCadastrar={cadastrarColaborador} enviando={enviandoCadastro} />,
+		cadastro: (
+			<FormularioCadastro
+				modo="cadastro"
+				onCadastrar={cadastrarColaborador}
+				enviando={enviandoCadastro}
+			/>
+		),
+		edicao: (
+			<FormularioCadastro
+				modo="edicao"
+				onAtualizar={atualizarColaborador}
+				onBuscarPorId={buscarColaboradorPorId}
+				onCancelarEdicao={cancelarEdicao}
+				colaboradorEmEdicao={colaboradorEmEdicao}
+				enviando={enviandoEdicao}
+			/>
+		),
 		listagem: (
 			<ListaColaboradores
 				colaboradores={colaboradores}
 				carregando={carregandoLista}
 				erro={erroLista}
+				onEditar={iniciarEdicao}
 				onExcluir={removerColaborador}
 			/>
 		),
@@ -90,6 +164,11 @@ function Secoes({ conteudos = {} }: SecoesProps) {
 	const conteudo = conteudos[secaoAtual] ?? conteudosPadrao[secaoAtual]
 
 	function trocarSecao(proximaSecao: SecaoId) {
+		if (proximaSecao !== "edicao") {
+			setColaboradorEmEdicao(null)
+			setErroEdicao(null)
+		}
+
 		setSecaoAtual(proximaSecao)
 	}
 
@@ -116,6 +195,8 @@ function Secoes({ conteudos = {} }: SecoesProps) {
 			<div className="secoes-conteudo">
 				{secaoAtual === "cadastro" && erroCadastro ? (
 					<p className="secoes-estado">{erroCadastro}</p>
+				) : secaoAtual === "edicao" && erroEdicao ? (
+					<p className="secoes-estado">{erroEdicao}</p>
 				) : null}
 				{conteudo ?? (
 					<div className="secoes-estado">

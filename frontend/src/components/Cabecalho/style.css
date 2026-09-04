@@ -1,9 +1,9 @@
 .cabecalho {
     box-sizing: border-box;
     color: #ffffff;
-    width: min(1180px, 100%);
+    width: 100%;
     min-height: 142px;
-    margin: 0 auto;
+    margin: 0;
     padding: 26px 40px;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -99,8 +99,8 @@
     line-height: 1;
 }
 
-@media (max-width: 760px) {
-    .cabecalho-conteudo {
+@media (max-width: 920px) {
+    .cabecalho {
         min-height: 0;
         padding: 24px;
         grid-template-columns: 1fr auto;
@@ -129,5 +129,11 @@
 
     .cabecalho-horario {
         font-size: 22px;
+    }
+}
+
+@media (max-width: 520px) {
+    .cabecalho {
+        padding: 20px;
     }
 }

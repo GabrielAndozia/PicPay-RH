@@ -1,10 +1,39 @@
-import { useState, type ChangeEvent, type FormEvent } from "react"
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import type { FormularioCadastroProps } from "./FormularioCadastroProps"
 import { dadosCadastroIniciais, type DadosCadastroColaborador } from "./script"
 import "./style.css"
 
-function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastroProps) {
+function FormularioCadastro({
+	modo = "cadastro",
+	onCadastrar,
+	onAtualizar,
+	onBuscarPorId,
+	onCancelarEdicao,
+	colaboradorEmEdicao = null,
+	enviando = false,
+}: FormularioCadastroProps) {
 	const [dados, setDados] = useState<DadosCadastroColaborador>(dadosCadastroIniciais)
+	const [idBusca, setIdBusca] = useState("")
+	const [idCarregado, setIdCarregado] = useState<number | null>(null)
+	const exibindoBusca = modo === "edicao"
+	const emEdicao = colaboradorEmEdicao !== null
+	const idBuscaNormalizado = idBusca.trim()
+	const idBuscaCorrespondeAoCarregado =
+		emEdicao && idCarregado !== null && idBuscaNormalizado === String(idCarregado)
+	const podeEditar = !exibindoBusca || idBuscaCorrespondeAoCarregado
+
+	useEffect(() => {
+		if (colaboradorEmEdicao) {
+			const { id, ...dadosColaborador } = colaboradorEmEdicao
+			setDados(dadosColaborador)
+			setIdBusca(String(id))
+			setIdCarregado(id)
+			return
+		}
+
+		setDados(dadosCadastroIniciais)
+		setIdCarregado(null)
+	}, [colaboradorEmEdicao])
 
 	function alterarCampo(evento: ChangeEvent<HTMLInputElement>) {
 		const { name, value } = evento.target
@@ -16,21 +45,90 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 		}))
 	}
 
-	async function cadastrarColaborador(evento: FormEvent<HTMLFormElement>) {
+	async function submeterFormulario(evento: FormEvent<HTMLFormElement>) {
 		evento.preventDefault()
+
+		if (modo === "edicao" && !emEdicao) {
+			return
+		}
+
+		if (emEdicao && colaboradorEmEdicao) {
+			await onAtualizar?.(colaboradorEmEdicao.id, dados)
+			return
+		}
+
 		await onCadastrar?.(dados)
 		setDados(dadosCadastroIniciais)
+	}
+
+	async function buscarPorId(evento: FormEvent<HTMLFormElement>) {
+		evento.preventDefault()
+		const id = Number(idBusca)
+
+		if (!Number.isInteger(id) || id <= 0) {
+			return
+		}
+
+		await onBuscarPorId?.(id)
+	}
+
+	function cancelarEdicao() {
+		onCancelarEdicao?.()
+		setDados(dadosCadastroIniciais)
+		setIdBusca("")
+		setIdCarregado(null)
 	}
 
 	return (
 		<section className="formulario-cadastro" aria-labelledby="titulo-cadastro">
 			<div className="formulario-cadastro-cabecalho">
 				<p className="formulario-cadastro-identificador">Colaboradores</p>
-				<h2 id="titulo-cadastro">Cadastrar colaborador</h2>
-				<p>Informe os dados para incluir um novo colaborador.</p>
+				<h2 id="titulo-cadastro">
+					{modo === "cadastro"
+						? "Cadastrar colaborador"
+						: emEdicao
+							? "Atualizar colaborador"
+							: "Pesquisar colaborador para atualizar"}
+				</h2>
+				<p>
+					{modo === "cadastro"
+						? "Informe os dados para incluir um novo colaborador."
+						: emEdicao
+							? "Revise os dados e confirme a atualizacao do registro."
+							: "Digite o ID para carregar os dados antes de atualizar."}
+				</p>
+
+				{exibindoBusca ? (
+					<form className="formulario-cadastro-busca" onSubmit={buscarPorId}>
+						<label htmlFor="idBusca">Pesquisar para atualizar (ID)</label>
+						<div className="formulario-cadastro-busca-campo">
+							<input
+								id="idBusca"
+								name="idBusca"
+								type="number"
+								min="1"
+								step="1"
+								value={idBusca}
+								onChange={(evento) => {
+									setIdBusca(evento.target.value)
+								}}
+								disabled={enviando}
+								placeholder="Ex.: 1"
+							/>
+							<button type="submit" disabled={enviando || idBusca.trim().length === 0}>
+								Buscar
+							</button>
+						</div>
+						{!podeEditar ? (
+							<p className="formulario-cadastro-busca-aviso">
+								Busque o ID informado para habilitar a edicao dos campos.
+							</p>
+						) : null}
+					</form>
+				) : null}
 			</div>
 
-			<form className="formulario-cadastro-form" onSubmit={cadastrarColaborador}>
+			<form className="formulario-cadastro-form" onSubmit={submeterFormulario}>
 				<div className="formulario-cadastro-campo formulario-cadastro-campo-completo">
 					<label htmlFor="nome">Nome completo</label>
 					<input
@@ -40,7 +138,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						value={dados.nome}
 						onChange={alterarCampo}
 						autoComplete="name"
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -53,7 +151,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						type="text"
 						value={dados.cargo}
 						onChange={alterarCampo}
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -67,7 +165,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						value={dados.email}
 						onChange={alterarCampo}
 						autoComplete="email"
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -80,7 +178,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						type="tel"
 						value={dados.telefone}
 						onChange={alterarCampo}
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -93,7 +191,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						type="text"
 						value={dados.departamento}
 						onChange={alterarCampo}
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -108,7 +206,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						step="0.01"
 						value={dados.salario}
 						onChange={alterarCampo}
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -121,7 +219,7 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						type="text"
 						value={dados.cidade}
 						onChange={alterarCampo}
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
@@ -134,14 +232,34 @@ function FormularioCadastro({ onCadastrar, enviando = false }: FormularioCadastr
 						type="text"
 						value={dados.status}
 						onChange={alterarCampo}
-						disabled={enviando}
+						disabled={enviando || !podeEditar}
 						required
 					/>
 				</div>
 
 				<div className="formulario-cadastro-acoes">
-					<button className="formulario-cadastro-enviar" type="submit" disabled={enviando}>
-						{enviando ? "Cadastrando..." : "Cadastrar colaborador"}
+					{exibindoBusca && emEdicao ? (
+						<button
+							className="formulario-cadastro-cancelar"
+							type="button"
+							onClick={cancelarEdicao}
+							disabled={enviando}
+						>
+							Cancelar
+						</button>
+					) : null}
+					<button
+						className="formulario-cadastro-enviar"
+						type="submit"
+						disabled={enviando || (exibindoBusca && (!emEdicao || !podeEditar))}
+					>
+						{enviando
+							? exibindoBusca
+								? "Atualizando..."
+								: "Cadastrando..."
+							: exibindoBusca
+								? "Atualizar colaborador"
+								: "Cadastrar colaborador"}
 					</button>
 				</div>
 			</form>

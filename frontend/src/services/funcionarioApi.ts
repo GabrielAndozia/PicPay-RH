@@ -27,12 +27,22 @@ async function tratarResposta<T>(response: Response): Promise<T> {
 }
 
 export async function listarFuncionarios(): Promise<FuncionarioResponseDTO[]> {
-	const response = await fetch(FUNCIONARIOS_ENDPOINT)
+	const response = await fetch(FUNCIONARIOS_ENDPOINT, {
+		method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 	return tratarResposta<FuncionarioResponseDTO[]>(response)
 }
 
 export async function buscarFuncionarioPorId(id: number): Promise<FuncionarioResponseDTO> {
-	const response = await fetch(`${FUNCIONARIOS_ENDPOINT}/${id}`)
+	const response = await fetch(`${FUNCIONARIOS_ENDPOINT}/${id}`, {
+		method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 	return tratarResposta<FuncionarioResponseDTO>(response)
 }
 
