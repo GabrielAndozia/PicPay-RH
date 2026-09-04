@@ -78,6 +78,65 @@
 	color: #526158;
 }
 
+.lista-colaboradores-confirmacao {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	display: grid;
+	place-items: center;
+	background: rgba(18, 28, 23, 0.5);
+	padding: 20px;
+}
+
+.lista-colaboradores-confirmacao-card {
+	width: min(100%, 420px);
+	padding: 24px;
+	background: #ffffff;
+	border: 1px solid #dce6df;
+	border-radius: 12px;
+	box-shadow: 0 20px 40px rgba(23, 33, 30, 0.16);
+}
+
+.lista-colaboradores-confirmacao-card h3 {
+	margin: 0 0 12px;
+	color: #1e2a23;
+	font-size: 22px;
+}
+
+.lista-colaboradores-confirmacao-card p {
+	margin: 0;
+	color: #526158;
+	line-height: 1.5;
+}
+
+.lista-colaboradores-confirmacao-acoes {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 24px;
+}
+
+.lista-colaboradores-confirmacao-cancelar,
+.lista-colaboradores-confirmacao-excluir {
+	min-height: 40px;
+	padding: 10px 16px;
+	border: 0;
+	border-radius: 8px;
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.lista-colaboradores-confirmacao-cancelar {
+	background: #eef3f0;
+	color: #385044;
+}
+
+.lista-colaboradores-confirmacao-excluir {
+	background: #d92c2c;
+	color: #ffffff;
+}
+
 @media (max-width: 520px) {
 	.lista-colaboradores-cabecalho {
 		align-items: flex-start;

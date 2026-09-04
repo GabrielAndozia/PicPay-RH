@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import ItemColaborador from "../ItemColaborador"
+import ConfirmacaoExclusao from "../ConfirmacaoExclusao"
 import type { Colaborador } from "./script"
 import "./style.css"
 import type { ListaColaboradoresProps } from "./ListaColaboradoresProps"
@@ -36,9 +37,23 @@ function ListaColaboradores({
 	const [filtroId, setFiltroId] = useState("")
 	const [filtroNome, setFiltroNome] = useState("")
 	const [filtroCargo, setFiltroCargo] = useState("")
+	const [colaboradorParaExcluir, setColaboradorParaExcluir] = useState<Colaborador | null>(null)
 
-	function excluirColaborador(colaborador: Colaborador) {
-		onExcluir?.(colaborador)
+	function abrirConfirmacaoExclusao(colaborador: Colaborador) {
+		setColaboradorParaExcluir(colaborador)
+	}
+
+	function fecharConfirmacaoExclusao() {
+		setColaboradorParaExcluir(null)
+	}
+
+	async function excluirColaborador() {
+		if (!colaboradorParaExcluir) {
+			return
+		}
+
+		await onExcluir?.(colaboradorParaExcluir)
+		fecharConfirmacaoExclusao()
 	}
 
 	const colaboradoresFiltrados = useMemo(() => {
@@ -114,7 +129,7 @@ function ListaColaboradores({
 							key={colaborador.id}
 							colaborador={colaborador}
 							onEditar={onEditar}
-							onExcluir={excluirColaborador}
+							onExcluir={abrirConfirmacaoExclusao}
 						/>
 					))}
 				</ul>
@@ -123,6 +138,12 @@ function ListaColaboradores({
 			) : (
 				<p className="lista-colaboradores-vazia">Nenhum colaborador cadastrado.</p>
 			)}
+
+			<ConfirmacaoExclusao
+				colaborador={colaboradorParaExcluir}
+				onConfirmar={excluirColaborador}
+				onCancelar={fecharConfirmacaoExclusao}
+			/>
 		</section>
 	)
 }
